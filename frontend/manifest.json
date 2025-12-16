@@ -1,0 +1,57 @@
+{
+  "name": "frontend",
+  "appid": "__UNI__XXXXXXX",
+  "description": "UniApp Frontend Application",
+  "versionName": "0.0.1",
+  "versionCode": "001",
+  "transformPx": false,
+  "app-plus": {
+    "usingComponents": true,
+    "nvueStyleCompiler": "uni-app",
+    "compilerVersion": 3,
+    "modules": {},
+    "distribute": {
+      "android": {
+        "permissions": [
+          "<uses-permission android:name=\"android.permission.INTERNET\"/>",
+          "<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\"/>",
+          "<uses-permission android:name=\"android.permission.ACCESS_WIFI_STATE\"/>"
+        ]
+      },
+      "ios": {},
+      "sdkConfigs": {}
+    }
+  },
+  "quickapp": {},
+  "mp-weixin": {
+    "appid": "YOUR_WECHAT_APPID",
+    "setting": {
+      "urlCheck": false,
+      "es6": true,
+      "postcss": true,
+      "minified": true
+    },
+    "usingComponents": true
+  },
+  "mp-alipay": {
+    "appid": "YOUR_ALIPAY_APPID",
+    "usingComponents": true
+  },
+  "h5": {
+    "title": "UniApp Frontend",
+    "router": {
+      "mode": "hash",
+      "base": "/"
+    },
+    "devServer": {
+      "https": false,
+      "port": 5173
+    },
+    "publicPath": "/",
+    "optimization": {
+      "treeShaking": {
+        "enable": true
+      }
+    }
+  }
+}

@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: backend
+  profiles:
+    active: development
+
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+logging:
+  level:
+    root: INFO
+    com.project.backend: DEBUG

@@ -1,0 +1,50 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:devdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.H2Dialect
+
+server:
+  port: 8080
+
+logging:
+  level:
+    root: INFO
+    com.project.backend: DEBUG
+    org.springframework.web: DEBUG
+    org.hibernate.SQL: DEBUG
+
+# Placeholder configurations for WeChat
+wechat:
+  app-id: YOUR_WECHAT_APP_ID
+  app-secret: YOUR_WECHAT_APP_SECRET
+  # Mini Program API endpoints
+  api:
+    base-url: https://api.weixin.qq.com
+    token-url: /cgi-bin/token
+    user-info-url: /sns/jscode2session
+
+# Placeholder configurations for Alipay
+alipay:
+  app-id: YOUR_ALIPAY_APP_ID
+  private-key: YOUR_ALIPAY_PRIVATE_KEY
+  public-key: YOUR_ALIPAY_PUBLIC_KEY
+  alipay-public-key: YOUR_ALIPAY_PLATFORM_PUBLIC_KEY
+  # API endpoints
+  gateway-url: https://openapi.alipaydev.com/gateway.do
+  format: json
+  charset: UTF-8
+  sign-type: RSA2
