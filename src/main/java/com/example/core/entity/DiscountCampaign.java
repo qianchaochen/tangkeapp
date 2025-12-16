@@ -1,0 +1,138 @@
+package com.example.core.entity;
+
+import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+/**
+ * Discount campaign entity
+ */
+@Entity
+@Table(name = "discount_campaigns")
+public class DiscountCampaign {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "name", nullable = false, length = 200)
+    private String name;
+
+    @Column(name = "description", columnDefinition = "TEXT")
+    private String description;
+
+    @Column(name = "discount_type", nullable = false, length = 20)
+    private String discountType; // PERCENTAGE, FIXED_AMOUNT
+
+    @Column(name = "discount_value", nullable = false, precision = 10, scale = 2)
+    private BigDecimal discountValue;
+
+    @Column(name = "min_order_amount", precision = 10, scale = 2)
+    private BigDecimal minOrderAmount;
+
+    @Column(name = "max_discount_amount", precision = 10, scale = 2)
+    private BigDecimal maxDiscountAmount;
+
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive = true;
+
+    @Column(name = "valid_from", nullable = false)
+    private LocalDateTime validFrom;
+
+    @Column(name = "valid_to", nullable = false)
+    private LocalDateTime validTo;
+
+    @Column(name = "max_usage_per_user")
+    private Integer maxUsagePerUser;
+
+    @Column(name = "total_usage_limit")
+    private Integer totalUsageLimit;
+
+    @Column(name = "current_usage", nullable = false)
+    private Integer currentUsage = 0;
+
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;
+
+    // Constructors
+    public DiscountCampaign() {}
+
+    public DiscountCampaign(String name, String description, String discountType, 
+                          BigDecimal discountValue, LocalDateTime validFrom, LocalDateTime validTo) {
+        this.name = name;
+        this.description = description;
+        this.discountType = discountType;
+        this.discountValue = discountValue;
+        this.validFrom = validFrom;
+        this.validTo = validTo;
+    }
+
+    // Getters and Setters
+    public Long getId() { return id; }
+
+    public void setId(Long id) { this.id = id; }
+
+    public String getName() { return name; }
+
+    public void setName(String name) { this.name = name; }
+
+    public String getDescription() { return description; }
+
+    public void setDescription(String description) { this.description = description; }
+
+    public String getDiscountType() { return discountType; }
+
+    public void setDiscountType(String discountType) { this.discountType = discountType; }
+
+    public BigDecimal getDiscountValue() { return discountValue; }
+
+    public void setDiscountValue(BigDecimal discountValue) { this.discountValue = discountValue; }
+
+    public BigDecimal getMinOrderAmount() { return minOrderAmount; }
+
+    public void setMinOrderAmount(BigDecimal minOrderAmount) { this.minOrderAmount = minOrderAmount; }
+
+    public BigDecimal getMaxDiscountAmount() { return maxDiscountAmount; }
+
+    public void setMaxDiscountAmount(BigDecimal maxDiscountAmount) { this.maxDiscountAmount = maxDiscountAmount; }
+
+    public Boolean getIsActive() { return isActive; }
+
+    public void setIsActive(Boolean isActive) { this.isActive = isActive; }
+
+    public LocalDateTime getValidFrom() { return validFrom; }
+
+    public void setValidFrom(LocalDateTime validFrom) { this.validFrom = validFrom; }
+
+    public LocalDateTime getValidTo() { return validTo; }
+
+    public void setValidTo(LocalDateTime validTo) { this.validTo = validTo; }
+
+    public Integer getMaxUsagePerUser() { return maxUsagePerUser; }
+
+    public void setMaxUsagePerUser(Integer maxUsagePerUser) { this.maxUsagePerUser = maxUsagePerUser; }
+
+    public Integer getTotalUsageLimit() { return totalUsageLimit; }
+
+    public void setTotalUsageLimit(Integer totalUsageLimit) { this.totalUsageLimit = totalUsageLimit; }
+
+    public Integer getCurrentUsage() { return currentUsage; }
+
+    public void setCurrentUsage(Integer currentUsage) { this.currentUsage = currentUsage; }
+
+    public LocalDateTime getCreatedAt() { return createdAt; }
+
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+}
