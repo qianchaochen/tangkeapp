@@ -46,6 +46,9 @@ public class Transaction {
     @Column(name = "project_type", nullable = false)
     private ProjectType projectType;
 
+    @Column(name = "reference_no", length = 64)
+    private String referenceNo;
+
     @Column(name = "metadata", columnDefinition = "TEXT")
     private String metadata;
 
@@ -93,6 +96,10 @@ public class Transaction {
     public ProjectType getProjectType() { return projectType; }
 
     public void setProjectType(ProjectType projectType) { this.projectType = projectType; }
+
+    public String getReferenceNo() { return referenceNo; }
+
+    public void setReferenceNo(String referenceNo) { this.referenceNo = referenceNo; }
 
     public String getMetadata() { return metadata; }
 

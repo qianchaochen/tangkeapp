@@ -607,3 +607,164 @@ VUE_APP_WECHAT_WEB_APPID=your_web_appid
 5. Implement token refresh logic for expired tokens
 6. Add analytics and tracking
 7. Setup proper error boundaries
+
+---
+
+# Wallet Recharge UI (UniApp) - Phase 3
+
+This section adds a simple balance/recharge UI and triggers WeChat Pay / Alipay flows.
+
+## API Endpoints Used
+
+- `GET /api/wallet/balance`
+- `GET /api/wallet/promotions`
+- `POST /api/wallet/recharge/initiate`
+
+## Recharge Page (recharge.vue)
+
+```vue
+<template>
+  <view class="container">
+    <view class="balance-card">
+      <text class="label">当前余额</text>
+      <text class="balance">¥ {{ balance }}</text>
+    </view>
+
+    <view class="section">
+      <text class="section-title">选择充值金额</text>
+      <view class="preset-grid">
+        <view
+          v-for="amt in presets"
+          :key="amt"
+          class="preset"
+          :class="{ active: selectedAmount === amt }"
+          @click="selectedAmount = amt"
+        >
+          ¥ {{ amt }}
+        </view>
+      </view>
+
+      <view v-if="promotions.length" class="promo">
+        <text class="promo-title">优惠</text>
+        <view v-for="p in promotions" :key="p.id" class="promo-item">
+          <text>{{ p.name }}：充 {{ p.rechargeAmount }} 送 {{ p.bonusAmount }}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="section">
+      <text class="section-title">支付方式</text>
+      <radio-group @change="onChannelChange">
+        <label class="radio">
+          <radio value="WECHAT_PAY" :checked="channel==='WECHAT_PAY'" /> 微信支付
+        </label>
+        <label class="radio">
+          <radio value="ALIPAY" :checked="channel==='ALIPAY'" /> 支付宝
+        </label>
+      </radio-group>
+    </view>
+
+    <button class="btn" :loading="loading" :disabled="loading" @click="startRecharge">
+      {{ loading ? '处理中...' : '立即充值' }}
+    </button>
+  </view>
+</template>
+
+<script>
+import apiClient from '@/uni_modules/wechat-login/utils/apiClient.js';
+
+export default {
+  data() {
+    return {
+      balance: '0.00',
+      presets: [10, 20, 50, 100, 200],
+      selectedAmount: 20,
+      channel: 'WECHAT_PAY',
+      promotions: [],
+      loading: false
+    }
+  },
+  async onShow() {
+    await this.refreshBalance();
+    await this.loadPromotions();
+  },
+  methods: {
+    onChannelChange(e) {
+      this.channel = e.detail.value;
+    },
+    async refreshBalance() {
+      const res = await apiClient.get('/api/wallet/balance');
+      this.balance = res.data.balance;
+    },
+    async loadPromotions() {
+      const res = await apiClient.get('/api/wallet/promotions');
+      this.promotions = res.data || [];
+    },
+    async startRecharge() {
+      try {
+        this.loading = true;
+        const init = await apiClient.post('/api/wallet/recharge/initiate', {
+          channel: this.channel,
+          amount: String(this.selectedAmount)
+        });
+
+        if (this.channel === 'WECHAT_PAY') {
+          const p = init.data.wechatPayParams;
+          await new Promise((resolve, reject) => {
+            uni.requestPayment({
+              provider: 'wxpay',
+              timeStamp: p.timeStamp,
+              nonceStr: p.nonceStr,
+              package: p.package,
+              signType: p.signType,
+              paySign: p.paySign,
+              success: resolve,
+              fail: reject
+            });
+          });
+        } else {
+          await new Promise((resolve, reject) => {
+            uni.requestPayment({
+              provider: 'alipay',
+              orderInfo: init.data.alipayOrderString,
+              success: resolve,
+              fail: reject
+            });
+          });
+        }
+
+        // Payment success means the provider finished; webhook will credit the balance.
+        // Poll/refresh balance to reflect the credited amount.
+        await this.refreshBalance();
+        uni.showToast({ title: '充值成功' });
+      } catch (e) {
+        uni.showToast({ title: '充值失败', icon: 'none' });
+      } finally {
+        this.loading = false;
+      }
+    }
+  }
+}
+</script>
+
+<style scoped>
+.container { padding: 16px; }
+.balance-card { padding: 16px; background: #fff; border-radius: 12px; margin-bottom: 16px; }
+.label { color: #666; display: block; }
+.balance { font-size: 28px; font-weight: bold; margin-top: 8px; display: block; }
+.section { background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+.section-title { font-weight: 600; display: block; margin-bottom: 12px; }
+.preset-grid { display: flex; flex-wrap: wrap; gap: 10px; }
+.preset { padding: 10px 14px; border: 1px solid #eee; border-radius: 8px; }
+.preset.active { border-color: #09bb07; color: #09bb07; }
+.promo { margin-top: 12px; }
+.promo-title { font-weight: 600; display: block; margin-bottom: 6px; }
+.promo-item { color: #666; font-size: 12px; margin-top: 4px; }
+.radio { display: block; margin-top: 8px; }
+.btn { background: #09bb07; color: #fff; }
+</style>
+```
+
+Notes:
+- In production, the balance will update after the provider calls the backend webhook (`/api/payments/wechat/notify` or `/api/payments/alipay/notify`).
+- You can add a polling loop (e.g. retry `GET /api/wallet/balance` for ~10s) if immediate refresh is required.

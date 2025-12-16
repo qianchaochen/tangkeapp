@@ -23,6 +23,7 @@ public class TransactionMapper {
         dto.setType(transaction.getType());
         dto.setAmount(transaction.getAmount());
         dto.setProjectType(transaction.getProjectType());
+        dto.setReferenceNo(transaction.getReferenceNo());
         dto.setMetadata(transaction.getMetadata());
         dto.setCreatedAt(transaction.getCreatedAt());
         dto.setUpdatedAt(transaction.getUpdatedAt());
@@ -43,6 +44,7 @@ public class TransactionMapper {
         transaction.setType(dto.getType());
         transaction.setAmount(dto.getAmount());
         transaction.setProjectType(dto.getProjectType());
+        transaction.setReferenceNo(dto.getReferenceNo());
         transaction.setMetadata(dto.getMetadata());
 
         return transaction;
@@ -59,6 +61,7 @@ public class TransactionMapper {
         transaction.setType(dto.getType());
         transaction.setAmount(dto.getAmount());
         transaction.setProjectType(dto.getProjectType());
+        transaction.setReferenceNo(dto.getReferenceNo());
         transaction.setMetadata(dto.getMetadata());
     }
 }
