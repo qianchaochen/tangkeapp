@@ -16,6 +16,7 @@ public class TransactionDTO {
     private TransactionType type;
     private BigDecimal amount;
     private ProjectType projectType;
+    private String referenceNo;
     private String metadata;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -56,6 +57,10 @@ public class TransactionDTO {
     public ProjectType getProjectType() { return projectType; }
 
     public void setProjectType(ProjectType projectType) { this.projectType = projectType; }
+
+    public String getReferenceNo() { return referenceNo; }
+
+    public void setReferenceNo(String referenceNo) { this.referenceNo = referenceNo; }
 
     public String getMetadata() { return metadata; }
 

@@ -64,6 +64,13 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
                                              @Param("type") TransactionType type);
 
     /**
+     * Find transaction by type and reference no (used for idempotency)
+     */
+    java.util.Optional<Transaction> findByTypeAndReferenceNo(TransactionType type, String referenceNo);
+
+    long countByTypeAndReferenceNo(TransactionType type, String referenceNo);
+
+    /**
      * Find recent transactions with pagination support
      */
     @Query("SELECT t FROM Transaction t ORDER BY t.createdAt DESC")

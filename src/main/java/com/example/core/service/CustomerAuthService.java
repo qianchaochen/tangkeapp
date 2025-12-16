@@ -1,6 +1,8 @@
 package com.example.core.service;
 
+import com.example.core.entity.Account;
 import com.example.core.entity.Customer;
+import com.example.core.repository.AccountRepository;
 import com.example.core.repository.CustomerRepository;
 import com.example.core.security.JwtTokenProvider;
 import org.springframework.stereotype.Service;
@@ -13,12 +15,14 @@ import java.util.Optional;
 public class CustomerAuthService {
 
     private final CustomerRepository customerRepository;
+    private final AccountRepository accountRepository;
     private final WechatService wechatService;
     private final JwtTokenProvider jwtTokenProvider;
 
-    public CustomerAuthService(CustomerRepository customerRepository, WechatService wechatService,
-                               JwtTokenProvider jwtTokenProvider) {
+    public CustomerAuthService(CustomerRepository customerRepository, AccountRepository accountRepository,
+                               WechatService wechatService, JwtTokenProvider jwtTokenProvider) {
         this.customerRepository = customerRepository;
+        this.accountRepository = accountRepository;
         this.wechatService = wechatService;
         this.jwtTokenProvider = jwtTokenProvider;
     }
@@ -47,6 +51,10 @@ public class CustomerAuthService {
             customer.setFirstVisitAt(LocalDateTime.now());
             customerRepository.save(customer);
         }
+
+        // Ensure wallet account exists for the customer
+        accountRepository.findByCustomerId(customer.getId())
+                .orElseGet(() -> accountRepository.save(new Account(customer)));
 
         String token = jwtTokenProvider.generateToken(customer.getId());
 

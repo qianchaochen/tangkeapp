@@ -31,6 +31,10 @@ public class Account {
     @Column(name = "total_spend", nullable = false, precision = 10, scale = 2)
     private BigDecimal totalSpend = BigDecimal.ZERO;
 
+    @Version
+    @Column(name = "version", nullable = false)
+    private Long version = 0L;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -69,6 +73,10 @@ public class Account {
     public BigDecimal getTotalSpend() { return totalSpend; }
 
     public void setTotalSpend(BigDecimal totalSpend) { this.totalSpend = totalSpend; }
+
+    public Long getVersion() { return version; }
+
+    public void setVersion(Long version) { this.version = version; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
 
